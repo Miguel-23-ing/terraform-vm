@@ -1,0 +1,51 @@
+# terraform.tfvars.example
+# Copia este archivo a terraform.tfvars y ajusta los valores según tu configuración
+
+# ⚠️ OBLIGATORIO: Reemplaza con tu subscription ID de Azure
+subscription_id = "tu-subscription-id-aqui"
+
+# Configuración básica del proyecto
+resource_group_name = "rg-vm-terraform"
+location           = "East US"  # Cambiar si necesitas otra región
+vm_name            = "vm-terraform-miguel"
+admin_username     = "azureuser"
+
+# Tamaño de VM (optimizado para plan estudiantil de Azure)
+# Opciones recomendadas por costo:
+# - Standard_B1s   (1 vCPU, 1GB RAM) - Más económica (~$7.30/mes)
+# - Standard_B1ms  (1 vCPU, 2GB RAM) - Opción intermedia
+# - Standard_B2s   (2 vCPU, 4GB RAM) - Si necesitas más rendimiento
+vm_size = "Standard_B1s"
+
+# Configuración de red
+vnet_name = "vnet-vm-terraform"
+vnet_address_space = ["10.0.0.0/16"]
+subnet_name = "subnet-vm-terraform"
+subnet_address_prefix = "10.0.2.0/24"
+public_ip_name = "pip-vm-terraform"
+nsg_name = "nsg-vm-terraform"
+
+# Seguridad SSH
+# ⚠️ IMPORTANTE: Para mayor seguridad, reemplaza "0.0.0.0/0" con tu IP pública
+# Puedes obtener tu IP con: curl ifconfig.me
+allowed_ssh_sources = ["0.0.0.0/0"]  # CAMBIAR EN PRODUCCIÓN
+
+# Configuración del sistema
+os_disk_type = "Standard_LRS"  # Tipo de disco más económico
+ubuntu_version = "20_04-lts-gen2"
+
+# Tags para organizar recursos
+tags = {
+  Environment = "Development"
+  Project     = "Terraform-VM"
+  Owner       = "Student"
+  ManagedBy   = "Terraform"
+  Purpose     = "Learning"
+}
+
+# Notas importantes:
+# 1. Asegúrate de tener permisos de Contributor en tu suscripción de Azure
+# 2. El proyecto generará automáticamente claves SSH para acceso seguro
+# 3. La clave privada se guardará como ssh-key-{vm_name}.pem
+# 4. Para conectarte usa: ssh -i ssh-key-{vm_name}.pem {admin_username}@{public_ip}
+# 5. Recuerda ejecutar 'terraform destroy' cuando no necesites los recursos

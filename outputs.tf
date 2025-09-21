@@ -1,29 +1,50 @@
-# Outputs para obtener información importante de la VM
 output "resource_group_name" {
-  value = azurerm_resource_group.vm_rg.name
+  description = "Name of the resource group"
+  value       = azurerm_resource_group.main.name
 }
 
 output "public_ip_address" {
-  value = azurerm_public_ip.vm_public_ip.ip_address
+  description = "Public IP address of the VM"
+  value       = module.networking.public_ip_address
 }
 
 output "ssh_connection_command" {
-  value = "ssh azureuser@${azurerm_public_ip.vm_public_ip.ip_address}"
+  description = "SSH command to connect to the VM"
+  value       = "ssh -i ssh-key-${var.vm_name}.pem ${var.admin_username}@${module.networking.public_ip_address}"
 }
 
 output "vm_admin_username" {
-  value = "azureuser"
-}
-
-output "vm_admin_password" {
-  value     = "TerraformVM123!"
-  sensitive = true
+  description = "VM admin username"
+  value       = var.admin_username
 }
 
 output "vm_size" {
-  value = "Standard_B1s"
+  description = "VM size"
+  value       = var.vm_size
 }
 
 output "vm_location" {
-  value = azurerm_resource_group.vm_rg.location
+  description = "VM location"
+  value       = azurerm_resource_group.main.location
+}
+
+output "private_key_path" {
+  description = "Path to the private SSH key"
+  value       = "ssh-key-${var.vm_name}.pem"
+  sensitive   = true
+}
+
+output "web_url" {
+  description = "URL to access the web server"
+  value       = "http://${module.networking.public_ip_address}"
+}
+
+output "estimated_monthly_cost" {
+  description = "Estimated monthly cost for Standard_B1s VM"
+  value       = "$7.30 USD/month (East US region)"
+}
+
+output "vm_private_ip" {
+  description = "Private IP address of the VM"
+  value       = module.compute.private_ip_address
 }
