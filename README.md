@@ -1,6 +1,6 @@
 # VM Terraform - Azure
 
-This project deploys a cost-effective virtual machine on Azure using Terraform with automated configuration through cloud-init.
+This project provisions an affordable Azure virtual machine using Terraform, with automated setup via cloud-init.
 
 ## Features
 
