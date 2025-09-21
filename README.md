@@ -1,97 +1,180 @@
-<<<<<<< HEAD
-# terraform-vm
-=======
 # VM Terraform - Azure
 
-Este proyecto despliega una máquina virtual económica en Azure usando Terraform.
+This project deploys a cost-effective virtual machine on Azure using Terraform with automated configuration through cloud-init.
 
-## Características
+## Features
 
-- **VM Size**: Standard_B1s (la más económica)
+- **VM Size**: Standard_B1s (most economical)
 - **OS**: Ubuntu 20.04 LTS
-- **Usuario**: azureuser
-- **Contraseña**: TerraformVM123!
-- **Acceso**: SSH y RDP habilitados
-- **Puertos abiertos**: 22 (SSH), 80 (HTTP), 443 (HTTPS), 3389 (RDP)
+- **Username**: azureuser
+- **Password**: Terra2323
+- **Access**: SSH enabled with password authentication
+- **Open ports**: 22 (SSH), 80 (HTTP), 443 (HTTPS)
+- **Pre-installed software**: Nginx, htop, curl, wget, git, unzip
+- **Web server**: Nginx with custom welcome page
 
-## Requisitos previos
+## Prerequisites
 
-1. Azure CLI instalado y configurado
-2. Terraform instalado
-3. Suscripción de Azure activa
+- Azure CLI installed and configured
+- Terraform installed (version 1.13.1 or higher)
+- Active Azure subscription
 
-## Despliegue
+## Configuration
 
-1. **Inicializar Terraform**:
-   ```bash
-   terraform init
-   ```
+Your subscription ID is already configured in the state file. The project uses:
+- **Resource Group**: rg-vm-terraform
+- **Location**: East US
+- **Virtual Network**: 10.0.0.0/16
+- **Subnet**: 10.0.2.0/24
 
-2. **Planificar el despliegue**:
-   ```bash
-   terraform plan
-   ```
+## Deployment
 
-3. **Aplicar la configuración**:
-   ```bash
-   terraform apply
-   ```
+![alt text](image-6.png)
 
-4. **Obtener la IP pública**:
-   ```bash
-   terraform output public_ip_address
-   ```
+![alt text](image-7.png)
 
-## Conexión a la VM
-
-### SSH (Linux/macOS)
+### Initialize Terraform:
 ```bash
-ssh azureuser@<IP_PUBLICA>
+terraform init
+```
+
+### Plan the deployment:
+```bash
+terraform plan
+```
+
+### Apply the configuration:
+```bash
+terraform apply
+```
+
+### Get the public IP:
+```bash
+terraform output public_ip_address
+```
+
+## Bash Scripts
+
+You can automate with the included scripts:
+
+### Make scripts executable:
+```bash
+chmod +x ./deploy.sh ./destroy.sh
+```
+
+### Deploy with script:
+```bash
+./deploy.sh
+```
+
+### Destroy resources with script:
+```bash
+./destroy.sh
+```
+
+![alt text](image-9.png)
+
+![alt text](image-10.png)
+
+
+## Connect to the VM
+
+![alt text](image-8.png)
+
+
+### SSH (Linux/macOS/Windows with WSL)
+```bash
+ssh azureuser@<PUBLIC_IP>
 ```
 
 ### PuTTY (Windows)
-- Host: IP_PUBLICA
-- Port: 22
-- Username: azureuser
-- Password: TerraformVM123!
+- **Host**: PUBLIC_IP
+- **Port**: 22
+- **Username**: azureuser
+- **Password**: Terra2323
 
-### RDP (Windows)
-- IP: IP_PUBLICA
-- Port: 3389
-- Username: azureuser
-- Password: TerraformVM123!
+## Web Access
 
-## Costos estimados
+Once deployed, you can access the web server at:
+```
+http://<PUBLIC_IP>
+```
 
-La VM Standard_B1s cuesta aproximadamente:
-- **$7.30 USD/mes** en East US
-- **$0.0104 USD/hora**
 
-## Servicios incluidos
+## Current Infrastructure
 
-- Nginx web server (accesible en http://IP_PUBLICA)
-- Herramientas básicas: htop, curl, wget, git, unzip
-- Firewall configurado (UFW)
+Based on the Terraform state, your infrastructure includes:
 
-## Destruir recursos
+- **Resource Group**: rg-vm-terraform
+- **Virtual Machine**: vm-terraform-miguel
+- **Network Interface**: nic-vm-terraform (MAC: 7C-1E-52-00-1F-3D)
+- **Public IP**: pip-vm-terraform (172.191.192.243)
+- **Virtual Network**: vnet-vm-terraform
+- **Subnet**: subnet-vm-terraform
+- **Private IP**: 10.0.2.4
 
-Para eliminar todos los recursos y evitar costos:
+## Estimated Costs
+
+The Standard_B1s VM costs approximately:
+- **$7.30 USD/month** in East US
+- **$0.0104 USD/hour**
+
+## Included Services
+
+- ✅ Nginx web server (accessible at http://PUBLIC_IP)
+- ✅ Basic tools: htop, curl, wget, git, unzip
+- ✅ Configured firewall (UFW) with rules for SSH, HTTP, HTTPS
+- ✅ Automatic package updates
+- ✅ Custom welcome page with system information
+
+## Destroy Resources
+
+To remove all resources and avoid charges:
+
 ```bash
 terraform destroy
 ```
 
-## Archivos del proyecto
+## Project Files
 
-- `main.tf`: Configuración principal de recursos
-- `variables.tf`: Variables de configuración
-- `outputs.tf`: Outputs del despliegue
-- `cloud-init.txt`: Script de inicialización de la VM
+- **[main.tf](main.tf)**: Main resource configuration
+- **[variables.tf](variables.tf)**: Configuration variables
+- **[outputs.tf](outputs.tf)**: Deployment outputs
+- **[cloud-init.txt](cloud-init.txt)**: VM initialization script
+- **[deploy.sh](deploy.sh)**: Automated deployment script
+- **[destroy.sh](destroy.sh)**: Script to destroy resources
+- **[.terraform.lock.hcl](.terraform.lock.hcl)**: Provider version locks
 
-## Seguridad
+## Cloud-Init Configuration
 
-⚠️ **IMPORTANTE**: Esta configuración es para pruebas. Para producción:
-- Cambiar la contraseña por defecto
-- Usar SSH keys en lugar de contraseñas
-- Restringir acceso por IP
-- Implementar Azure Key Vault para secretos
->>>>>>> b012615 (feat: Add first version of terraform vm)
+The [cloud-init.txt](cloud-init.txt) file automatically configures:
+
+1. **Package installation**: Updates system and installs required packages
+2. **User setup**: Creates azureuser with sudo privileges
+3. **SSH configuration**: Enables password authentication
+4. **Firewall setup**: Configures UFW with appropriate rules
+5. **Web server**: Installs and starts Nginx with custom index page
+6. **Security**: Sets up proper SSH configuration
+
+## Security
+
+⚠️ **IMPORTANT**: This configuration is for testing purposes. For production:
+
+- Change the default password (Terra2323)
+- Use SSH keys instead of passwords
+- Restrict access by IP ranges
+- Use Azure Key Vault for secrets management
+- Enable network security groups with stricter rules
+- Consider using Azure Bastion for secure access
+
+## Troubleshooting
+
+### SSH Connection Issues
+1. Verify the VM is running in Azure portal
+2. Check if the public IP is accessible: `ping <PUBLIC_IP>`
+3. Ensure port 22 is open in network security groups
+
+### Web Server Issues
+1. SSH into the VM and check Nginx status: `sudo systemctl status nginx`
+2. Verify firewall rules: `sudo ufw status`
+3. Check if port 80 is accessible: `curl http://<PUBLIC_IP>`
