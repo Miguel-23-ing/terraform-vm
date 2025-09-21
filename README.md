@@ -1,6 +1,6 @@
 # VM Terraform - Azure
 
-This project deploys a cost-effective virtual machine on Azure using Terraform with automated configuration through cloud-init and SSH key authentication.
+This project provisions an affordable Azure virtual machine using Terraform, with automated setup via cloud-init and secured with SSH key authentication.
 
 ## Features
 
